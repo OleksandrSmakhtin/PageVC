@@ -28,7 +28,7 @@ class MainVC: UIViewController {
     
     
     
-    private let colorBtn: UIButton = {
+    private let filterBtn: UIButton = {
         let btn = UIButton(type: .system)
         btn.backgroundColor = .label
         btn.setTitleColor(.white, for: .normal)
@@ -95,6 +95,8 @@ class MainVC: UIViewController {
     private func addTargets() {
         nextBtn.addTarget(self, action: #selector(nextAction), for: .touchUpInside)
         prevBtn.addTarget(self, action: #selector(prevAction), for: .touchUpInside)
+        filterBtn.addTarget(self, action: #selector(changeFilterAction), for: .touchUpInside)
+        filterBtn.addTarget(self, action: #selector(disableFilterAction), for: .touchDownRepeat)
     }
     
     
@@ -104,6 +106,12 @@ class MainVC: UIViewController {
     @objc private func prevAction() {
         pageVC.changeToPrev()
     }
+    @objc private func changeFilterAction() {
+        pageVC.changeFilter()
+    }
+    @objc private func disableFilterAction() {
+        pageVC.disableFilter()
+    }
     
     
     private func addSubviews() {
@@ -112,7 +120,7 @@ class MainVC: UIViewController {
         view.addSubview(titleLbl)
         view.addSubview(prevBtn)
         view.addSubview(nextBtn)
-        view.addSubview(colorBtn)
+        view.addSubview(filterBtn)
         view.addSubview(pageControl)
     }
     
@@ -147,10 +155,10 @@ class MainVC: UIViewController {
         ]
         
         let colorBtnConstraints = [
-            colorBtn.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 45),
-            colorBtn.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -45),
-            colorBtn.heightAnchor.constraint(equalToConstant: 60),
-            colorBtn.topAnchor.constraint(equalTo: nextBtn.bottomAnchor, constant: 40)
+            filterBtn.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 45),
+            filterBtn.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -45),
+            filterBtn.heightAnchor.constraint(equalToConstant: 60),
+            filterBtn.topAnchor.constraint(equalTo: nextBtn.bottomAnchor, constant: 40)
         ]
         
         let pageControlConstraints = [

@@ -6,20 +6,30 @@
 //
 
 import UIKit
+import CoreImage
 
 
 protocol ImageIndexDelegate: AnyObject {
     func getImageIndex(index: Int)
 }
 
+protocol FilterDelegate: AnyObject {
+    func changeFilter()
+}
+
+
 class ImageVC: UIViewController {
 
     weak var imageDelegate: ImageIndexDelegate?
+    weak var filterDelegate: FilterDelegate?
+
     
-    var index: Int = 0    
-    private let catImageView: UIImageView = {
+    var index: Int = 0
+    
+    
+     var catImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "cat1")
+        imageView.image = UIImage(named: "cat0")
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
@@ -27,23 +37,29 @@ class ImageVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        self.catImageView.image = {
-            switch index {
-            case 0:
-                return UIImage(named: "cat1")
-            case 1:
-                return UIImage(named: "cat2")
-            case 2:
-                return UIImage(named: "cat3")
-            default:
-                return UIImage()
-            }
-        }()
-        
+        catImageView.image = UIImage(named: "cat\(index)")
+            
         
         addSubviews()
     }
+    
+    
+    
+    func applyFilter() {
+        
+            let startImage = CIImage(image: UIImage(named: "cat\(index)")!)
+            let filter = CIFilter(name: "CIColorInvert")
+            filter?.setValue(startImage, forKey: kCIInputImageKey)
+            let newImage = UIImage(ciImage: (filter?.outputImage)!)
+            self.catImageView.image = newImage
+
+    }
+    
+    func disableFilter() {
+        catImageView.image = UIImage(named: "cat\(index)")
+    }
+    
+    
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -68,9 +84,23 @@ class ImageVC: UIViewController {
         
     }
     
+    
     private func addSubviews() {
         view.addSubview(catImageView)
     }
     
 
+}
+
+
+
+
+
+
+extension ImageVC: TestDelegate {
+    func testFunc() {
+        print("DEBIL SUKA")
+    }
+    
+    
 }

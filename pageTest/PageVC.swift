@@ -6,25 +6,35 @@
 //
 
 import UIKit
+import CoreImage
+
+
+enum Filters: String {
+    case white = "CIColorInvert"
+    case black = "CIPixellate"
+}
 
 
 protocol PageControlDelegate: AnyObject {
     func changePage(to index: Int)
 }
 
+protocol TestDelegate: AnyObject {
+    func testFunc()
+}
+
 
 class PageVC: UIPageViewController {
     
-    
-    
     weak var pageControlDelegate: PageControlDelegate?
-    
-    
+    weak var testDelegate: TestDelegate?
+        
     private var imagesVCs = [UIViewController]()
     
-
     var currentInx = 0
     
+    var filterName = Filters.black
+        
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +51,11 @@ class PageVC: UIPageViewController {
             ImageVC.getInstance(index: 1, object: self),
             ImageVC.getInstance(index: 2, object: self)
         ]
+        
+//        for imageVC in imagesVCs {
+//            guard let vc = imageVC as? ImageVC else { return }
+//            self.testDelegate = vc
+//        }
         
         setViewControllers([imagesVCs[0]], direction: .forward, animated: true)
     }
@@ -62,6 +77,25 @@ class PageVC: UIPageViewController {
             setViewControllers([imagesVCs[currentInx]], direction: .reverse, animated: true)
         }
     }
+    
+    
+    func changeFilter() {
+        
+        testDelegate?.testFunc()
+        
+        
+        guard let vc = imagesVCs[currentInx] as? ImageVC else { return }
+        vc.applyFilter()
+        
+
+    }
+    
+    
+    func disableFilter() {
+        guard let vc = imagesVCs[currentInx] as? ImageVC else { return }
+        vc.disableFilter()
+    }
+    
 
 }
 
