@@ -12,11 +12,11 @@ class MainVC: UIViewController {
 
     
     
-    
+    // track index of imageVC
     private var pageIndex = 0
     
     
-    
+    //MARK: - UI Objects
     private let pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.numberOfPages = 3
@@ -25,8 +25,6 @@ class MainVC: UIViewController {
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         return pageControl
     }()
-    
-    
     
     private let filterBtn: UIButton = {
         let btn = UIButton(type: .system)
@@ -79,43 +77,56 @@ class MainVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        //bg color
         view.backgroundColor = .systemBackground
-        
-
+        // add subviews
         addSubviews()
+        // apply constraints
         applyConstraints()
+        // add targets for btns
         addTargets()
-        
-        
+        // set delegate for pageVC
         pageVC.pageControlDelegate = self
     }
     
-    
+    //MARK: - Add targets
     private func addTargets() {
+        // next action
         nextBtn.addTarget(self, action: #selector(nextAction), for: .touchUpInside)
+        // prev action
         prevBtn.addTarget(self, action: #selector(prevAction), for: .touchUpInside)
+        // apply filter action
         filterBtn.addTarget(self, action: #selector(changeFilterAction), for: .touchUpInside)
-        filterBtn.addTarget(self, action: #selector(disableFilterAction), for: .touchDownRepeat)
+        // create tap gesture recognizer to detect double taps
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(disableFilterAction))
+        // set required taps
+        doubleTap.numberOfTapsRequired = 2
+        // add gesture to filter btn
+        filterBtn.addGestureRecognizer(doubleTap)
     }
     
-    
+    // next action
     @objc private func nextAction() {
         pageVC.changeToNext()
     }
+    // prev action
     @objc private func prevAction() {
         pageVC.changeToPrev()
     }
+    // filter action
     @objc private func changeFilterAction() {
         pageVC.changeFilter()
     }
+    // double tap action
     @objc private func disableFilterAction() {
         pageVC.disableFilter()
     }
     
-    
+    //MARK: - Add subviews
     private func addSubviews() {
+        // page VC as a child
         addChild(pageVC)
+        // add it's view as a subview
         view.addSubview(pageVC.view)
         view.addSubview(titleLbl)
         view.addSubview(prevBtn)
@@ -124,6 +135,8 @@ class MainVC: UIViewController {
         view.addSubview(pageControl)
     }
     
+    
+    //MARK: - Apply constraints
     private func applyConstraints() {
         
         
@@ -176,7 +189,7 @@ class MainVC: UIViewController {
 
 }
 
-
+//MARK: - PageControlDelegate
 extension MainVC: PageControlDelegate {
     func changePage(to index: Int) {
         pageControl.currentPage = index
